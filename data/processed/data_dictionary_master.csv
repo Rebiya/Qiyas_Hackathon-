@@ -1,0 +1,19 @@
+column_name,data_type,description,source,used_for_model,notes
+record_id,string,Unique training row identifier generated for the processed train table.,synthetic,No,Not used in model training.
+row_id,string,Forecast row identifier aligned with the submission template order.,synthetic,No,Matches raw submission ordering for final prediction outputs.
+zone,string,Canonical Addis Ababa demand zone name after cleaning/normalization.,raw + cleaned alias mapping,Yes,12 canonical zones.
+pickup_hour,datetime,Local pickup timestamp at hourly resolution in Africa/Addis_Ababa time.,synthetic,Yes,Used to join weather and calendar features.
+hour,integer,Hour-of-day (0-23).,derived,Yes,Supports cyclical daily demand patterns.
+day_of_week,integer,Day of week from 0 (Monday) to 6 (Sunday).,derived,Yes,Calendar seasonality feature.
+is_weekend,integer,"1 for Saturday/Sunday, 0 otherwise.",derived,Yes,Weekend effect.
+month,integer,Calendar month (1-12).,derived,Yes,Monthly demand trend.
+is_holiday,integer,Indicator for public holiday or notable holiday window.,synthetic event/calendar feature,Yes,Used to model holiday-driven demand shifts.
+temperature_c,float,Weather temperature at the hour.,weather_hourly,Yes,Required weather-derived feature.
+rain_mm,float,Hourly precipitation amount.,weather_hourly,Yes,Required weather-derived feature.
+humidity_pct,float,Relative humidity percent.,weather_hourly,Yes,Weather feature.
+wind_kph,float,Wind speed in km/h.,weather_hourly,Yes,Weather feature.
+event_flag,integer,Indicator that a demand-affecting event is active for the zone-hour.,events_calendar,Yes,Required event-derived feature.
+event_type,string,"Event category such as market, sport, festival, or cultural activity.",events_calendar,Yes,Event-specific effect.
+event_impact_score,float,Synthetic impact score used to represent demand uplift during active event windows.,derived from event calendar,Yes,Provides a simple event uplift signal.
+historical_avg_trips_24h,float,Zone-hour historical average demand to anchor the forecast.,synthetic baseline signal,Yes,Simple demand baseline.
+trips,integer,Target variable: hourly trip demand for the zone.,synthetic label,Yes,Training target only.
